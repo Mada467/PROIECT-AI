@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameMatch AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎮 GameMatch AI</h1>
+        <p class="subtitle">Caută orice joc și află tot ce vrei</p>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Caută un joc... (ex: GTA 5)" />
+            <button onclick="searchGames()">Caută</button>
+        </div>
+
+        <div id="loading" class="hidden">Se caută...</div>
+        <div id="results"></div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+        <div class="modal" id="modalContent" onclick="event.stopPropagation()"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
