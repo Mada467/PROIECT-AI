@@ -442,3 +442,109 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: #6c63ff; }
 
 .hidden { display: none; }
+
+/* ─── Favorite button pe card ─── /
+.card-img-wrap {
+    position: relative;
+}
+
+.fav-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.6);
+    border: none;
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background 0.2s;
+    opacity: 0.5;
+    z-index: 2;
+}
+
+.game-card:hover .fav-btn {
+    opacity: 1;
+}
+
+.fav-btn.fav-active {
+    opacity: 1;
+    background: rgba(108, 99, 255, 0.85);
+    transform: scale(1.1);
+}
+
+.fav-btn:hover {
+    transform: scale(1.2);
+}
+
+/ ─── Favorite buton în header ─── /
+.fav-header-btn {
+    margin-left: auto;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #ccc;
+    padding: 8px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.fav-header-btn:hover,
+.fav-header-btn.fav-active {
+    background: #6c63ff;
+    border-color: #6c63ff;
+    color: #fff;
+}
+
+/ ─── Pagina Favorite ─── */
+.favorites-page {
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 32px 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.favorites-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.favorites-header h1 {
+    font-size: 1.6rem;
+}
+
+.no-favorites {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.no-favorites p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.go-chat-btn {
+    background: #6c63ff;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.go-chat-btn:hover {
+    background: #574fd6;
+}
