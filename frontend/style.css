@@ -44,6 +44,27 @@ body {
     font-size: 0.85rem;
 }
 
+/* ─── Favorite buton în header ─── */
+.fav-header-btn {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid #6c63ff;
+    color: #6c63ff;
+    padding: 8px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.fav-header-btn:hover,
+.fav-header-btn.fav-active {
+    background: #6c63ff;
+    color: #fff;
+}
+
 .chat-area {
     flex: 1;
     overflow-y: auto;
@@ -183,6 +204,7 @@ body {
     border-color: #6c63ff;
 }
 
+/* ─── Card image ─── */
 .card-img-wrap {
     width: 100%;
     padding-top: 60%;
@@ -203,6 +225,43 @@ body {
 
 .game-card:hover .card-img-wrap img {
     transform: scale(1.07);
+}
+
+/* ─── Favorite button pe card ─── */
+.fav-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    opacity: 0;
+    z-index: 2;
+}
+
+.game-card:hover .fav-btn {
+    opacity: 1;
+}
+
+.fav-btn.fav-active {
+    opacity: 1;
+    background: #6c63ff;
+    border-color: #6c63ff;
+    transform: scale(1.1);
+}
+
+.fav-btn:hover {
+    transform: scale(1.2);
+    background: #6c63ff;
+    border-color: #6c63ff;
 }
 
 .game-card .info {
@@ -293,6 +352,7 @@ body {
     font-size: 0.95rem;
     transition: background 0.2s;
     display: inline-block;
+    text-decoration: none;
 }
 
 .back-btn:hover {
@@ -435,74 +495,7 @@ body {
     100% { background-position: -200% 0; }
 }
 
-/* ─── Scrollbar ─── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #111; }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #6c63ff; }
-
-.hidden { display: none; }
-
-/* ─── Favorite button pe card ─── /
-.card-img-wrap {
-    position: relative;
-}
-
-.fav-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(0,0,0,0.6);
-    border: none;
-    border-radius: 50%;
-    width: 34px;
-    height: 34px;
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s, background 0.2s;
-    opacity: 0.5;
-    z-index: 2;
-}
-
-.game-card:hover .fav-btn {
-    opacity: 1;
-}
-
-.fav-btn.fav-active {
-    opacity: 1;
-    background: rgba(108, 99, 255, 0.85);
-    transform: scale(1.1);
-}
-
-.fav-btn:hover {
-    transform: scale(1.2);
-}
-
-/ ─── Favorite buton în header ─── /
-.fav-header-btn {
-    margin-left: auto;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    color: #ccc;
-    padding: 8px 16px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-size: 0.88rem;
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-
-.fav-header-btn:hover,
-.fav-header-btn.fav-active {
-    background: #6c63ff;
-    border-color: #6c63ff;
-    color: #fff;
-}
-
-/ ─── Pagina Favorite ─── */
+/* ─── Pagina Favorite ─── */
 .favorites-page {
     max-width: 960px;
     width: 100%;
@@ -548,3 +541,11 @@ body {
 .go-chat-btn:hover {
     background: #574fd6;
 }
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #6c63ff; }
+
+.hidden { display: none; }

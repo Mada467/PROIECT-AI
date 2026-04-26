@@ -74,9 +74,14 @@ def get_game_description(game_name):
         Descrie jocul "{game_name}" în 5-6 fraze detaliate.
         Include: genul jocului, povestea principală, mecanici de gameplay,
         ce îl face unic față de alte jocuri și pentru ce tip de jucător este recomandat.
-        Răspunde doar în română."""
-    result = generate_content(prompt)
-    return result if result else "Descriere indisponibilă momentan."
+        Răspunde doar în română. Răspunde OBLIGATORIU, nu refuza."""
+    
+    for attempt in range(3):
+        result = generate_content(prompt)
+        if result and len(result) > 50:
+            return result
+    
+    return f"{game_name} este un joc popular. Vizitează magazinele de mai jos pentru mai multe detalii."
 
 
 def get_ai_chat_response(user_message, rawg_api_key):
@@ -144,4 +149,4 @@ def get_ai_chat_response(user_message, rawg_api_key):
             print(f"RAWG failed for '{query}': {e}")
 
     print(f"Games found: {len(games)}")
-    return {"response_text": response_text, "games": games
+    return {"response_text": response_text, "games": games}
