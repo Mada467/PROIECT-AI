@@ -8,17 +8,38 @@
 </head>
 <body>
 
-    <div class="container">
-        <h1>🎮 GameMatch AI</h1>
-        <p class="subtitle">Caută orice joc și află tot ce vrei</p>
+    <div class="app-layout">
+        <header class="app-header">
+            <div class="header-inner">
+                <span class="logo">🎮 GameMatch AI</span>
+                <span class="header-sub">Asistentul tău pentru orice întrebare despre jocuri</span>
+            </div>
+        </header>
 
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Caută un joc... (ex: GTA 5)" />
-            <button onclick="searchGames()">Caută</button>
+        <main class="chat-area" id="chatArea">
+            <div class="welcome-msg">
+                <h2>Bună! Sunt GameMatch AI 🎮</h2>
+                <p>Întreabă-mă orice despre jocuri video. De exemplu:</p>
+                <div class="suggestions">
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)">Recomandă un joc asemănător cu CS2</button>
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)">Jocuri free pe PS5</button>
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)">Cele mai bune jocuri de aventură cu story</button>
+                    <button class="suggestion-btn" onclick="sendSuggestion(this)">Jocuri co-op pentru 2 jucători</button>
+                </div>
+            </div>
+        </main>
+
+        <div class="input-area">
+            <div class="input-inner">
+                <input type="text" id="userInput" placeholder="Întreabă ceva despre jocuri..." />
+                <button id="sendBtn" onclick="sendMessage()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
         </div>
-
-        <div id="loading" class="hidden">Se caută...</div>
-        <div id="results"></div>
     </div>
 
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
