@@ -65,6 +65,68 @@ body {
     color: #fff;
 }
 
+/* ─── Filters bar ─── */
+.filters-bar {
+    background: #111;
+    border-bottom: 1px solid #222;
+    padding: 10px 24px;
+    flex-shrink: 0;
+}
+
+.filters-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    color: #666;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.filter-label-platform {
+    margin-left: 12px;
+}
+
+.filter-label-rating {
+    margin-left: 12px;
+}
+
+.age-btn,
+.platform-btn,
+.rating-btn {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #aaa;
+    padding: 5px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.age-btn:hover,
+.platform-btn:hover,
+.rating-btn:hover {
+    border-color: #6c63ff;
+    color: #fff;
+}
+
+.age-btn.active,
+.platform-btn.active,
+.rating-btn.active {
+    background: #6c63ff;
+    border-color: #6c63ff;
+    color: #fff;
+}
+
+/* ─── Chat area ─── */
 .chat-area {
     flex: 1;
     overflow-y: auto;

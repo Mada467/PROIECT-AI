@@ -21,12 +21,13 @@ if not RAWG_API_KEY:
 def chat():
     data = request.get_json()
     user_message = data.get("message", "").strip()
+    filters = data.get("filters", {})
 
     if not user_message:
         return jsonify({"error": "No message provided"}), 400
 
     try:
-        result = get_ai_chat_response(user_message, RAWG_API_KEY)
+        result = get_ai_chat_response(user_message, RAWG_API_KEY, filters=filters)
         return jsonify(result)
     except Exception as e:
         print(f"Chat error: {e}")
