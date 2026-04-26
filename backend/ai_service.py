@@ -6,49 +6,57 @@ load_dotenv()
 
 RAWG_BASE = "https://api.rawg.io/api"
 
+GENRE_MAP = {
+    "fps": "shooter",
+    "shooter": "shooter",
+    "cs2": "shooter",
+    "counter": "shooter",
+    "battle royale": "shooter",
+    "rpg": "role-playing-games-rpg",
+    "strategie": "strategy",
+    "strategy": "strategy",
+    "sport": "sports",
+    "fotbal": "sports",
+    "horror": "horror",
+    "aventura": "adventure",
+    "adventure": "adventure",
+    "co-op": "cooperative",
+    "coop": "cooperative",
+    "2 jucatori": "cooperative",
+    "doi jucatori": "cooperative",
+    "puzzle": "puzzle",
+    "racing": "racing",
+    "curse": "racing",
+    "simulare": "simulation",
+    "simulation": "simulation",
+    "arcade": "arcade",
+    "fighting": "fighting",
+    "lupta": "fighting",
+    "platforma": "platformer",
+    "platformer": "platformer",
+}
 
-# 🔧 Mapare cuvinte → genuri RAWG
+AGE_RATING_MAP = {
+    1: "Everyone",
+    2: "Teen",
+    3: "Mature",
+    4: "Adults Only",
+}
+
+
 def detect_genre(message):
     message = message.lower()
-
-    genre_map = {
-        "fps": "shooter",
-        "shooter": "shooter",
-        "cs2": "shooter",
-        "counter": "shooter",
-        "battle royale": "battle-royale",
-        "rpg": "role-playing-games-rpg",
-        "strategie": "strategy",
-        "sport": "sports",
-        "fotbal": "sports",
-        "horror": "horror",
-        "aventura": "adventure",
-        "adventure": "adventure",
-        "co-op": "cooperative",
-        "coop": "cooperative",
-        "2 jucatori": "cooperative",
-        "doi jucatori": "cooperative",
-    }
-
-    for key, value in genre_map.items():
+    for key, value in GENRE_MAP.items():
         if key in message:
             return value
-
     return None
 
 
-# 🔧 fallback dacă nu detectăm nimic
-def get_fallback_games(message):
-    return [
-        "Elden Ring",
-        "The Witcher 3",
-        "Red Dead Redemption 2",
-        "GTA 5"
-    ]
+def get_fallback_games():
+    return ["Elden Ring", "The Witcher 3", "Red Dead Redemption 2", "GTA 5"]
 
 
-# 🔥 FUNCȚIA PRINCIPALĂ (RECOMANDĂRI)
-def get_ai_chat_response(user_message, rawg_api_key):
+def get_ai_chat_response(user_message, rawg_api_key, filters=None):
     response_text = "Ți-am găsit câteva jocuri potrivite pentru tine 🎮"
     games = []
     seen_ids = set()
@@ -64,19 +72,22 @@ def get_ai_chat_response(user_message, rawg_api_key):
 
         if genre:
             params["genres"] = genre
-        else:
-            # fallback dacă nu detectăm gen → jocuri populare
-            params["ordering"] = "-added"
+
+        if filters:
+            if filters.get("age_rating"):
+                params["esrb_rating"] = filters["age_rating"]
+            if filters.get("platform"):
+                params["platforms"] = filters["platform"]
+            if filters.get("min_rating"):
+                params["metacritic"] = f"{filters['min_rating']},100"
 
         resp = requests.get(f"{RAWG_BASE}/games", params=params, timeout=10)
 
         if resp.status_code == 200:
             results = resp.json().get("results", [])
-
             for game in results:
                 if game.get("id") not in seen_ids and game.get("background_image"):
                     seen_ids.add(game.get("id"))
-
                     games.append({
                         "id": game.get("id"),
                         "name": game.get("name"),
@@ -85,7 +96,6 @@ def get_ai_chat_response(user_message, rawg_api_key):
                         "released": game.get("released"),
                         "genres": [g["name"] for g in game.get("genres", [])]
                     })
-
                 if len(games) == 4:
                     break
 
@@ -94,18 +104,14 @@ def get_ai_chat_response(user_message, rawg_api_key):
     except Exception as e:
         print(f"RAWG error: {e}")
 
-    # 🔥 fallback dacă nu găsește nimic
     if not games:
-        fallback = get_fallback_games(user_message)
-
-        for name in fallback:
+        for name in get_fallback_games():
             try:
                 resp = requests.get(f"{RAWG_BASE}/games", params={
                     "key": rawg_api_key,
                     "search": name,
                     "page_size": 1
-                })
-
+                }, timeout=10)
                 if resp.status_code == 200:
                     result = resp.json().get("results", [])
                     if result:
@@ -118,14 +124,11 @@ def get_ai_chat_response(user_message, rawg_api_key):
                             "released": g.get("released"),
                             "genres": [gen["name"] for gen in g.get("genres", [])]
                         })
-
             except:
                 continue
 
-    return {
-        "response_text": response_text,
-        "games": games
-    }
+    return {"response_text": response_text, "games": games}
+
+
 def get_game_description(game_name):
     return f"{game_name} este un joc popular. Verifică platformele disponibile pentru mai multe detalii."
-
