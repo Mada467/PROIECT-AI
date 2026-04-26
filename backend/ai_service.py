@@ -70,9 +70,10 @@ def generate_content(prompt):
 
 
 def get_game_description(game_name):
-    prompt = f"""Ești un expert în jocuri video. 
-        Descrie jocul "{game_name}" în maxim 3 fraze scurte.
-        Include: genul jocului, ce faci în joc și de ce merită jucat.
+    prompt = f"""Ești un expert în jocuri video.
+        Descrie jocul "{game_name}" în 5-6 fraze detaliate.
+        Include: genul jocului, povestea principală, mecanici de gameplay,
+        ce îl face unic față de alte jocuri și pentru ce tip de jucător este recomandat.
         Răspunde doar în română."""
     result = generate_content(prompt)
     return result if result else "Descriere indisponibilă momentan."
@@ -82,7 +83,6 @@ def get_ai_chat_response(user_message, rawg_api_key):
     response_text = "Iată câteva jocuri care s-ar putea să îți placă!"
     search_queries = []
 
-    # Prompt simplu care forțează JSON pur
     extract_prompt = (
         'You are a video game expert. User asked: "' + user_message + '"\n\n'
         'Reply with ONLY this JSON, no other text:\n'
@@ -144,4 +144,4 @@ def get_ai_chat_response(user_message, rawg_api_key):
             print(f"RAWG failed for '{query}': {e}")
 
     print(f"Games found: {len(games)}")
-    return {"response_text": response_text, "games": games}
+    return {"response_text": response_text, "games": games
