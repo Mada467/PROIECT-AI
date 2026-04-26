@@ -32,7 +32,7 @@ async function searchGames() {
                     <div class="genres">${game.genres.join(", ") || 'N/A'}</div>
                 </div>
             `;
-            card.onclick = () => window.location.href = `game-details.html?id=${game.id}`;
+            card.onclick = () => openModal(game.id);
             grid.appendChild(card);
         });
 
@@ -62,6 +62,7 @@ async function openModal(gameId) {
             <div class="rating">⭐ ${game.rating || 'N/A'} &nbsp;|&nbsp; 📅 ${game.released || 'N/A'}</div>
             <div class="genres" style="margin-top:6px;color:#aaa">${game.genres.join(", ")}</div>
             <div class="ai-desc">🤖 ${game.description_ai}</div>
+            <button class="details-btn" onclick="window.location.href='game-details.html?id=${game.id}'">🔍 Vezi Detalii Complete</button>
         `;
     } catch (err) {
         modalContent.innerHTML = "<p style='color:red'>Eroare la încărcare.</p>";

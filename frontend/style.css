@@ -167,3 +167,18 @@ h1 {
     color: #aaa;
     margin: 20px 0;
 }
+.details-btn {
+    margin-top: 16px;
+    width: 100%;
+    padding: 12px;
+    background: #6c63ff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.details-btn:hover {
+    background: #574fd6;
+}
