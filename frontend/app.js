@@ -1,4 +1,6 @@
-const API = "http://localhost:5000/api";
+const API = window.location.hostname === "localhost" 
+    ? "http://localhost:5000/api" 
+    : `${window.location.origin}/api`;
 
 function getFavorites() {
     return JSON.parse(localStorage.getItem("favorites") || "[]");
@@ -33,6 +35,7 @@ function sendSuggestion(btn) {
 
 async function sendMessage() {
     const input = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
     const message = input.value.trim();
     if (!message) return;
 
@@ -42,6 +45,7 @@ async function sendMessage() {
     appendUserMessage(message);
     input.value = "";
     input.disabled = true;
+    sendBtn.disabled = true;
 
     const loadingId = appendAILoading();
 
@@ -58,10 +62,12 @@ async function sendMessage() {
         removeLoading(loadingId);
         appendAIResponse(data.response_text, data.games || []);
     } catch (err) {
+        console.error("Chat error:", err);
         removeLoading(loadingId);
         appendAIError();
     } finally {
         input.disabled = false;
+        sendBtn.disabled = false;
         input.focus();
     }
 }
@@ -96,7 +102,14 @@ function appendAIError() {
     const chatArea = document.getElementById("chatArea");
     const div = document.createElement("div");
     div.className = "chat-bubble ai-bubble";
-    div.innerHTML = `<span class="ai-avatar">🎮</span><span style="color:#ff6b6b">Eroare la conexiunea cu serverul.</span>`;
+    const avatar = document.createElement("span");
+    avatar.className = "ai-avatar";
+    avatar.textContent = "🎮";
+    const msg = document.createElement("span");
+    msg.style.color = "#ff6b6b";
+    msg.textContent = "Eroare la conexiunea cu serverul.";
+    div.appendChild(avatar);
+    div.appendChild(msg);
     chatArea.appendChild(div);
     chatArea.scrollTop = chatArea.scrollHeight;
 }
@@ -127,25 +140,46 @@ function appendAIResponse(text, games) {
             const card = document.createElement("div");
             card.className = "game-card";
 
+            const imgWrap = document.createElement("div");
+            imgWrap.className = "card-img-wrap";
+
+            const img = document.createElement("img");
+            img.src = game.image || "https://placehold.co/400x220?text=No+Image";
+            img.alt = game.name;
+
             const favActive = isFavorite(game.id) ? "fav-active" : "";
             const favTitle = isFavorite(game.id) ? "Elimină din Favorite" : "Adaugă la Favorite";
 
-            card.innerHTML = `
-                <div class="card-img-wrap">
-                    <img src="${game.image || 'https://placehold.co/400x220?text=No+Image'}" alt="">
-                    <button class="fav-btn ${favActive}" title="${favTitle}">❤️</button>
-                </div>
-                <div class="info">
-                    <h3 class="card-title"></h3>
-                    <div class="rating">⭐ ${game.rating || 'N/A'}</div>
-                    <div class="genres"></div>
-                </div>
-            `;
+            const favBtn = document.createElement("button");
+            favBtn.className = `fav-btn ${favActive}`;
+            favBtn.title = favTitle;
+            favBtn.textContent = "❤️";
 
-            card.querySelector(".card-title").textContent = game.name;
-            card.querySelector(".genres").textContent = (game.genres || []).join(", ") || "N/A";
+            imgWrap.appendChild(img);
+            imgWrap.appendChild(favBtn);
 
-            const favBtn = card.querySelector(".fav-btn");
+            const info = document.createElement("div");
+            info.className = "info";
+
+            const title = document.createElement("h3");
+            title.className = "card-title";
+            title.textContent = game.name;
+
+            const rating = document.createElement("div");
+            rating.className = "rating";
+            rating.textContent = `⭐ ${game.rating || "N/A"}`;
+
+            const genres = document.createElement("div");
+            genres.className = "genres";
+            genres.textContent = (game.genres || []).join(", ") || "N/A";
+
+            info.appendChild(title);
+            info.appendChild(rating);
+            info.appendChild(genres);
+
+            card.appendChild(imgWrap);
+            card.appendChild(info);
+
             favBtn.addEventListener("click", (e) => {
                 e.stopPropagation();
                 toggleFavorite(game, favBtn);

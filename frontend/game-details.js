@@ -1,4 +1,6 @@
-const API = "http://localhost:5000/api";
+const API = window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
+    : `${window.location.origin}/api`;
 
 const params = new URLSearchParams(window.location.search);
 const gameId = params.get("id");
@@ -56,7 +58,10 @@ const STORE_LINKS = {
 
 async function loadGameDetails() {
     if (!gameId) {
-        document.getElementById("gameDetails").innerHTML = "<p style='color:red'>ID lipsă!</p>";
+        const p = document.createElement("p");
+        p.textContent = "ID lipsă!";
+        p.style.color = "red";
+        document.getElementById("gameDetails").appendChild(p);
         return;
     }
 
@@ -73,49 +78,89 @@ async function loadGameDetails() {
         const genres = (game.genres || []).join(", ") || "N/A";
         const platforms = (game.platforms || []).join(", ") || "N/A";
 
-        const storeButtonsHTML = stores.length > 0
-            ? stores.map(s => {
+        const container = document.getElementById("gameDetails");
+        container.innerHTML = "";
+
+        const img = document.createElement("img");
+        img.src = game.image || "";
+        img.alt = game.name;
+        container.appendChild(img);
+
+        const title = document.createElement("h1");
+        title.className = "game-title";
+        title.textContent = game.name;
+        container.appendChild(title);
+
+        const meta = document.createElement("div");
+        meta.className = "game-meta";
+        meta.innerHTML = `
+            <span>⭐ ${game.rating || "N/A"}</span>
+            <span>📅 ${game.released || "N/A"}</span>
+            <span>🎭 ${genres}</span>
+        `;
+        container.appendChild(meta);
+
+        const platformsDiv = document.createElement("div");
+        platformsDiv.className = "platforms-text";
+        const platformsP = document.createElement("p");
+        platformsP.textContent = `💻 Disponibil pe: ${platforms}`;
+        platformsDiv.appendChild(platformsP);
+        container.appendChild(platformsDiv);
+
+        const aiDesc = document.createElement("div");
+        aiDesc.className = "ai-desc";
+        const aiDescTitle = document.createElement("h3");
+        aiDescTitle.textContent = "🤖 Despre joc";
+        const aiDescText = document.createElement("p");
+        aiDescText.className = "ai-desc-text";
+        aiDescText.textContent = game.description_ai;
+        aiDesc.appendChild(aiDescTitle);
+        aiDesc.appendChild(aiDescText);
+        container.appendChild(aiDesc);
+
+        const storeSection = document.createElement("div");
+        storeSection.className = "store-section";
+        const storeSectionTitle = document.createElement("h3");
+        storeSectionTitle.textContent = "🛒 Unde poți cumpăra / descărca";
+        storeSection.appendChild(storeSectionTitle);
+
+        const storeButtons = document.createElement("div");
+        storeButtons.className = "store-buttons";
+
+        if (stores.length > 0) {
+            stores.forEach(s => {
                 const slug = s.store_slug;
                 const info = STORE_LINKS[slug];
-                const url = s.url || (info ? info.base + encodeURIComponent(game.name) : "#");
-                const label = info ? info.label : s.store_name;
-                const icon = info ? info.icon : "🔗";
-                const color = info ? info.color : "#333";
-                return `<a href="${url}" target="_blank" rel="noopener noreferrer"
-                            class="store-btn" style="background:${color}">
-                            ${icon} ${label}
-                        </a>`;
-            }).join("")
-            : "<p style='color:#666'>Nicio platformă disponibilă.</p>";
+                const url = s.url || (info ? info.base + encodeURIComponent(game.name) : null);
 
-        const container = document.getElementById("gameDetails");
+                if (!url) return;
 
-        container.innerHTML = `
-            <img src="${game.image || ''}" alt="">
-            <h1 class="game-title"></h1>
-            <div class="game-meta">
-                <span>⭐ ${game.rating || 'N/A'}</span>
-                <span>📅 ${game.released || 'N/A'}</span>
-                <span>🎭 ${genres}</span>
-            </div>
-            <div class="platforms-text">
-                <p>💻 Disponibil pe: ${platforms}</p>
-            </div>
-            <div class="ai-desc">
-                <h3>🤖 Despre joc</h3>
-                <p class="ai-desc-text"></p>
-            </div>
-            <div class="store-section">
-                <h3>🛒 Unde poți cumpăra / descărca</h3>
-                <div class="store-buttons">${storeButtonsHTML}</div>
-            </div>
-        `;
+                const a = document.createElement("a");
+                a.href = url;
+                a.target = "_blank";
+                a.rel = "noopener noreferrer";
+                a.className = "store-btn";
+                a.style.background = info ? info.color : "#333";
+                a.textContent = `${info ? info.icon : "🔗"} ${info ? info.label : s.store_name}`;
+                storeButtons.appendChild(a);
+            });
+        } else {
+            const noStores = document.createElement("p");
+            noStores.style.color = "#666";
+            noStores.textContent = "Nicio platformă disponibilă.";
+            storeButtons.appendChild(noStores);
+        }
 
-        container.querySelector(".game-title").textContent = game.name;
-        container.querySelector(".ai-desc-text").textContent = game.description_ai;
+        storeSection.appendChild(storeButtons);
+        container.appendChild(storeSection);
 
     } catch (err) {
-        document.getElementById("gameDetails").innerHTML = "<p style='color:red'>Eroare la încărcare.</p>";
+        console.error("Eroare la încărcare:", err);
+        const p = document.createElement("p");
+        p.textContent = "Eroare la încărcare.";
+        p.style.color = "red";
+        document.getElementById("gameDetails").innerHTML = "";
+        document.getElementById("gameDetails").appendChild(p);
     }
 }
 

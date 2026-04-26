@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["http://localhost:3000", "http://localhost:8080", "http://localhost:5500"])
 
 RAWG_API_KEY = os.getenv("RAWG_API_KEY")
 RAWG_BASE = "https://api.rawg.io/api"
@@ -38,15 +38,25 @@ def game_detail(game_id):
     if game_id <= 0:
         return jsonify({"error": "ID invalid"}), 400
 
-    rawg_resp = requests.get(f"{RAWG_BASE}/games/{game_id}", params={
-        "key": RAWG_API_KEY
-    })
+    try:
+        rawg_resp = requests.get(f"{RAWG_BASE}/games/{game_id}", params={
+            "key": RAWG_API_KEY
+        }, timeout=10)
+    except requests.exceptions.Timeout:
+        return jsonify({"error": "RAWG timeout"}), 504
+    except requests.exceptions.RequestException as e:
+        print(f"RAWG error: {e}")
+        return jsonify({"error": "Eroare conexiune RAWG"}), 502
 
     if rawg_resp.status_code != 200:
         return jsonify({"error": "Game not found"}), 404
 
     game = rawg_resp.json()
     name = game.get("name")
+
+    if not name:
+        return jsonify({"error": "Game name not found"}), 404
+
     description = get_game_description(name)
 
     return jsonify({
@@ -75,4 +85,4 @@ def health():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=os.getenv("FLASK_ENV") == "development")
+    app.run(host="0.0.0.0", port=5000, debug=False)
