@@ -32,7 +32,7 @@ async function searchGames() {
                     <div class="genres">${game.genres.join(", ") || 'N/A'}</div>
                 </div>
             `;
-            card.onclick = () => openModal(game.id);
+            card.onclick = () => window.location.href = `game-details.html?id=${game.id}`;
             grid.appendChild(card);
         });
 
