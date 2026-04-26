@@ -58,7 +58,16 @@ def game_detail(game_id):
     if not name:
         return jsonify({"error": "Game name not found"}), 404
 
-    description = get_game_description(name)
+    esrb = game.get("esrb_rating")
+    esrb_name = esrb.get("name") if esrb else "Not Rated"
+
+    game_data = {
+        "genres": [g["name"] for g in game.get("genres", [])],
+        "platforms": [p["platform"]["name"] for p in game.get("platforms", [])],
+        "released": game.get("released", ""),
+    }
+
+    description = get_game_description(name, game_data)
 
     return jsonify({
         "id": game.get("id"),
@@ -66,8 +75,9 @@ def game_detail(game_id):
         "image": game.get("background_image"),
         "rating": game.get("rating"),
         "released": game.get("released"),
-        "genres": [g["name"] for g in game.get("genres", [])],
-        "platforms": [p["platform"]["name"] for p in game.get("platforms", [])],
+        "esrb": esrb_name,
+        "genres": game_data["genres"],
+        "platforms": game_data["platforms"],
         "description_ai": description,
         "stores": [
             {
