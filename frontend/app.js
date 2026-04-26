@@ -1,7 +1,40 @@
-const API = window.location.hostname === "localhost" 
-    ? "http://localhost:5000/api" 
+const API = window.location.hostname === "localhost"
+    ? "http://localhost:5000/api"
     : `${window.location.origin}/api`;
 
+// ─── Filtre active ───
+let activeFilters = {
+    age_rating: "",
+    platform: "",
+    min_rating: ""
+};
+
+// ─── Butoane filtre ───
+document.querySelectorAll(".age-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".age-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeFilters.age_rating = btn.dataset.age;
+    });
+});
+
+document.querySelectorAll(".platform-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".platform-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeFilters.platform = btn.dataset.platform;
+    });
+});
+
+document.querySelectorAll(".rating-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".rating-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeFilters.min_rating = btn.dataset.rating;
+    });
+});
+
+// ─── Favorite ───
 function getFavorites() {
     return JSON.parse(localStorage.getItem("favorites") || "[]");
 }
@@ -49,11 +82,16 @@ async function sendMessage() {
 
     const loadingId = appendAILoading();
 
+    const filters = {};
+    if (activeFilters.age_rating) filters.age_rating = parseInt(activeFilters.age_rating);
+    if (activeFilters.platform) filters.platform = parseInt(activeFilters.platform);
+    if (activeFilters.min_rating) filters.min_rating = parseInt(activeFilters.min_rating);
+
     try {
         const res = await fetch(`${API}/chat`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message })
+            body: JSON.stringify({ message, filters })
         });
 
         if (!res.ok) throw new Error("Server error");
